@@ -20,5 +20,12 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = nihilisp\nihilisp.csproj
+		Policies = $0
+		$0.StandardHeader = $1
+		$1.Text = @////////////////////////////////////////////////////////////////////////////////\n// Copyright 2010 Seth Schroeder\n// This file is part of Nihilisp.\n//\n// Nihilisp is free software: you can redistribute it and/or modify\n// it under the terms of the GNU General Public License as published by\n// the Free Software Foundation, either version 3 of the License, or\n// (at your option) any later version.\n//\n// Nihilisp is distributed in the hope that it will be useful,\n// but WITHOUT ANY WARRANTY; without even the implied warranty of\n// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n// GNU General Public License for more details.\n//\n// You should have received a copy of the GNU General Public License\n// along with Nihilisp.  If not, see <http://www.gnu.org/licenses/>.\n////////////////////////////////////////////////////////////////////////////////\n// -*- mode: csharp -*-\n////////////////////////////////////////////////////////////////////////////////\n\n
+		$1.inheritsSet = Apache2License
+		$0.VersionControlPolicy = $2
+		$2.inheritsSet = Mono
+		description = A Lisp for .Net which is not intended to ever be meaningful on a grand scale, but will eagerly use the DLR.
 	EndGlobalSection
 EndGlobal

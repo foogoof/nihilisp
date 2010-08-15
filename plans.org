@@ -1,0 +1,20 @@
+* Lisp-y needs
+** reader
+*** immutable set of reader macros
+** compiler
+*** compiler macros
+*** prevent external recompilation of core functions
+* General design goals (in descending order)
+** maximize usage of DLR
+** great CLR interop
+** strongly typed
+** object oriented (make nil a callable instance of some object)
+* Design hopes
+** as self-hosting as possible
+** data structures should be at least lock free, ideally wait free
+*** as well the PRNG
+* Data structures
+** follow Clojure's uniform sequence abstraction
+*** default to mutable sequences
+*** eventually support immutable & persistent data structures
+**** HMM, using one generic interface for both mutable and immutable seems bad

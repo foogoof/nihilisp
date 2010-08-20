@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A6252691-2F57-4C7D-838F-B528D671A6EC}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>nihilisp</RootNamespace>
+    <RootNamespace>foonostic</RootNamespace>
     <AssemblyName>nihilisp</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -37,7 +37,22 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="IReader.cs" />
+    <Compile Include="NLObject.cs" />
+    <Compile Include="NLClass.cs" />
+    <Compile Include="NLString.cs" />
+    <Compile Include="NLInteger.cs" />
+    <Compile Include="NLSymbol.cs" />
+    <Compile Include="IAtom.cs" />
+    <Compile Include="Reader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <StandardHeader Text="//////////////////////////////////////////////////////////////////////////////&#xA;Copyright 2010 Seth Schroeder&#xA;This file is part of Nihilisp.&#xA;&#xA;Nihilisp is free software: you can redistribute it and/or modify&#xA;it under the terms of the GNU General Public License as published by&#xA;the Free Software Foundation, either version 3 of the License, or&#xA;(at your option) any later version.&#xA;&#xA;Nihilisp is distributed in the hope that it will be useful,&#xA;but WITHOUT ANY WARRANTY; without even the implied warranty of&#xA;MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#xA;GNU General Public License for more details.&#xA;&#xA;You should have received a copy of the GNU General Public License&#xA;along with Nihilisp.  If not, see &lt;http://www.gnu.org/licenses/&gt;.&#xA;/////////////////////////////////////////////////////////////////////////////&#xA;-*- mode: csharp -*-&#xA;/////////////////////////////////////////////////////////////////////////////" inheritsSet="Apache2License" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

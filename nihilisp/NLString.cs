@@ -18,26 +18,45 @@
 // -*- mode: csharp -*-
 ////////////////////////////////////////////////////////////////////////////////
 
-
+using Foognostic.Nihilisp.Core;
 using System;
-using foognostic.nihilisp.core;
 
-namespace nihilisp
+namespace Foognostic
 {
-	public class NLString : NLObject, IAtom
+	namespace Nihilisp
 	{
-		string val;
-		
-		public NLString ()
+		namespace Core
 		{
-		}
-		
-		public NLString create(string str)
-		{
-			NLString inst = new NLString();
-			inst.val = str;
-			return inst;
+			public class NLString : NLObject, IAtom, IForm
+			{
+				string _val;
+				public string val {
+					get { return _val; }
+				}
+
+				public NLString ()
+				{
+				}
+
+				public static NLString Create (string str)
+				{
+					NLString inst = new NLString ();
+					inst._val = str;
+					return inst;
+				}
+				
+				public IForm[] Contents {
+					get {
+						IForm[] ret = new IForm[1];
+						ret[0] = this;
+						return ret;
+					}
+				}
+				
+				public string Printable() {
+					return String.Format("#<[NLString] [{0}]>", this._val);
+				}
+			}
 		}
 	}
 }
-

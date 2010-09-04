@@ -17,16 +17,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 // -*- mode: csharp -*-
 ////////////////////////////////////////////////////////////////////////////////
+using Foognostic.Nihilisp.Core;
 
-
-using System;
-using foognostic.nihilisp.core;
-
-namespace foognostic
+namespace Foognostic
 {
-	namespace nihilisp
+	namespace Nihilisp
 	{
-		namespace core
+		namespace Core
 		{
 			public class NLClass : NLObject
 			{

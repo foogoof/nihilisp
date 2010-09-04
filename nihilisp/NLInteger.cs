@@ -17,36 +17,53 @@
 ////////////////////////////////////////////////////////////////////////////////
 // -*- mode: csharp -*-
 ////////////////////////////////////////////////////////////////////////////////
-
-
 using System;
-using foognostic.nihilisp.core;
+using Foognostic.Nihilisp.Core;
 
-namespace foognostic
+namespace Foognostic
 {
-	namespace nihilisp
+	namespace Nihilisp
 	{
-		public class NLInteger : NLObject, IAtom
+		namespace Core
 		{
-			int val;
-			
-			public NLInteger ()
+			public class NLInteger : NLClass, IAtom, IForm
 			{
-			}
-			
-			public static NLInteger create(int val)
-			{
-				NLInteger inst = new NLInteger();
-				inst.val = val;
-				return inst;
-			}
+				long _val;
 
-			public static NLInteger create(string val)
-			{
-				NLInteger inst = new NLInteger();
-				inst.val = Int32.Parse(val);
-				return inst;
+				public long val {
+					get { return _val; }
+				}
+
+				public NLInteger ()
+				{
+				}
+
+				public static NLInteger Create (long val)
+				{
+					NLInteger inst = new NLInteger ();
+					inst._val = val;
+					return inst;
+				}
+
+				public static NLInteger Create (string val)
+				{
+					NLInteger inst = new NLInteger ();
+					inst._val = Int64.Parse(val);
+					return inst;
+				}
+				
+				public IForm[] Contents {
+					get {
+						IForm[] ret = new IForm[1];
+						ret[0] = this;
+						return ret;
+					}
+				}
+				
+				public string Printable() {
+					return String.Format("#<[NLInteger] [{0}]>", this._val);
+				}
 			}
-}
+		}
 	}
 }

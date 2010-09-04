@@ -1,0 +1,32 @@
+* Quick summary
+  - Nihilisp is a programming language for the Common Language Runtime
+    (CLR) provided by Microsoft's [[http://msdn.microsoft.com/en-us/default.aspx][.Net]] and Novell's [[http://www.mono-project.com/][Mono]].
+  - Nihilisp is a Lisp which which aims to be:
+    + a Lisp similar to Clojure:
+      * always compiled
+      * uniform sequence abstraction
+      * syntactic clarity
+        + maps and vectors work differently than lists, so the syntax
+          is different
+    + statically typed
+      * with type inference
+    + object oriented
+      * in the Ruby / Smalltalk way, where even nil is an instance of
+        a class.
+    + concurrency friendly
+      * data structures are lock free
+        + eventually persistent data structures will be available
+      * pseudo random number generator will not be a serial bottleneck
+        or hot spot
+* Internal structure
+  - Nilihisp code is typically fed to the reader, which produces the
+    same text as the input, except:
+    + rejecting syntactic errors
+      * some static typechecking might be possible
+    + replacing reader macros with the equivalent text
+      * note that compiler macros pass through as-is
+  - Output from the reader is the input to the compiler, which:
+    + recursively expands compiler macros
+    + performs static type checking
+    + generates CIL
+  - d

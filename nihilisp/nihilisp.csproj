@@ -7,9 +7,10 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A6252691-2F57-4C7D-838F-B528D671A6EC}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>foonostic</RootNamespace>
+    <RootNamespace>foognostic</RootNamespace>
     <AssemblyName>nihilisp</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <StartupObject>Foognostic.Nihilisp.Runtime.REPL</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="nunit.framework" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -44,6 +46,12 @@
     <Compile Include="NLSymbol.cs" />
     <Compile Include="IAtom.cs" />
     <Compile Include="Reader.cs" />
+    <Compile Include="TestReader.cs" />
+    <Compile Include="ITypedInstanceFactory.cs" />
+    <Compile Include="IClassInstance.cs" />
+    <Compile Include="IForm.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="REPL.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

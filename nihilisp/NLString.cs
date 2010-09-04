@@ -21,42 +21,37 @@
 using Foognostic.Nihilisp.Core;
 using System;
 
-namespace Foognostic
-{
-	namespace Nihilisp
-	{
-		namespace Core
-		{
-			public class NLString : NLObject, IAtom, IForm
-			{
-				string _val;
-				public string val {
-					get { return _val; }
-				}
+namespace Foognostic {
+    namespace Nihilisp {
+        namespace Core {
+            public class NLString : NLObject, IAtom, IForm {
 
-				public NLString ()
-				{
-				}
+                string _val;
+                public string val {
+                    get { return _val; }
+                }
 
-				public static NLString Create (string str)
-				{
-					NLString inst = new NLString ();
-					inst._val = str;
-					return inst;
-				}
-				
-				public IForm[] Contents {
-					get {
-						IForm[] ret = new IForm[1];
-						ret[0] = this;
-						return ret;
-					}
-				}
-				
-				public string Printable() {
-					return String.Format("#<[NLString] [{0}]>", this._val);
-				}
-			}
-		}
-	}
+                public NLString () {
+                }
+
+                public static NLString Create (string str) {
+                    NLString inst = new NLString ();
+                    inst._val = str;
+                    return inst;
+                }
+
+                public IForm[] Contents {
+                    get {
+                        IForm[] ret = new IForm[1];
+                        ret[0] = this;
+                        return ret;
+                    }
+                }
+
+                public string Printable() {
+                    return String.Format("#<[NLString] [{0}]>", this._val);
+                }
+            }
+        }
+    }
 }

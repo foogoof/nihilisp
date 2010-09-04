@@ -21,19 +21,19 @@
 using Foognostic.Nihilisp.Exceptions;
 
 namespace Foognostic {
-	namespace Nihilisp {
-		namespace Core {
-			public class NLObject {
-				public NLObject () {}
+    namespace Nihilisp {
+        namespace Core {
+            public class NLObject {
+                public NLObject () {}
 
-				public static NLObject create () {
-					throw new InternalException ("Now, I can't do something with nothing!");
-				}
+                public static NLObject create () {
+                    throw new InternalException ("Now, I can't do something with nothing!");
+                }
 
-				public static NLObject create (NLObject something) {
-					throw new InternalException ("What am I supposed to do with " + something + "?");
-				}
-			}
-		}
-	}
+                public static NLObject create (NLObject something) {
+                    throw new InternalException ("What am I supposed to do with " + something + "?");
+                }
+            }
+        }
+    }
 }

@@ -20,50 +20,43 @@
 using System;
 using Foognostic.Nihilisp.Core;
 
-namespace Foognostic
-{
-	namespace Nihilisp
-	{
-		namespace Core
-		{
-			public class NLInteger : NLClass, IAtom, IForm
-			{
-				long _val;
+namespace Foognostic {
+    namespace Nihilisp {
+        namespace Core {
+            public class NLInteger : NLClass, IAtom, IForm {
+                long _val;
 
-				public long val {
-					get { return _val; }
-				}
+                public long val {
+                    get { return _val; }
+                }
 
-				public NLInteger ()
-				{
-				}
+                public NLInteger () {
+                }
 
-				public static NLInteger Create (long val)
-				{
-					NLInteger inst = new NLInteger ();
-					inst._val = val;
-					return inst;
-				}
+                public static NLInteger Create (long val) {
+                    NLInteger inst = new NLInteger ();
+                    inst._val = val;
+                    return inst;
+                }
 
-				public static NLInteger Create (string val)
-				{
-					NLInteger inst = new NLInteger ();
-					inst._val = Int64.Parse(val);
-					return inst;
-				}
-				
-				public IForm[] Contents {
-					get {
-						IForm[] ret = new IForm[1];
-						ret[0] = this;
-						return ret;
-					}
-				}
-				
-				public string Printable() {
-					return String.Format("#<[NLInteger] [{0}]>", this._val);
-				}
-			}
-		}
-	}
+                public static NLInteger Create (string val) {
+                    NLInteger inst = new NLInteger ();
+                    inst._val = Int64.Parse(val);
+                    return inst;
+                }
+
+                public IForm[] Contents {
+                    get {
+                        IForm[] ret = new IForm[1];
+                        ret[0] = this;
+                        return ret;
+                    }
+                }
+
+                public string Printable() {
+                    return String.Format("#<[NLInteger] [{0}]>", this._val);
+                }
+            }
+        }
+    }
 }

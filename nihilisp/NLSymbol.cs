@@ -20,11 +20,11 @@
 using Foognostic.Nihilisp.Core;
 
 namespace Foognostic {
-	namespace Nihilisp {
-		namespace Core {
-			public class NLSymbol : NLObject, IAtom {
-				public NLSymbol () { }
-			}
-		}
-	}
+    namespace Nihilisp {
+        namespace Core {
+            public class NLSymbol : NLObject, IAtom {
+                public NLSymbol () { }
+            }
+        }
+    }
 }

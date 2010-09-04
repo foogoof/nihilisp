@@ -19,18 +19,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 using Foognostic.Nihilisp.Core;
 
-namespace Foognostic
-{
-	namespace Nihilisp
-	{
-		namespace Core
-		{
-			public class NLClass : NLObject
-			{
-				public NLClass ()
-				{
-				}
-			}
-		}
-	}
+namespace Foognostic {
+    namespace Nihilisp {
+        namespace Core {
+            public class NLClass : NLObject {
+                public NLClass () {
+                }
+            }
+        }
+    }
 }

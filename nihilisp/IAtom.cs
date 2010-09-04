@@ -17,16 +17,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // -*- mode: csharp -*-
 ////////////////////////////////////////////////////////////////////////////////
-namespace Foognostic
-{
-	namespace Nihilisp
-	{
-		namespace Core
-		{
-			public interface IAtom
-			{
-			}
-		}
-	}
+namespace Foognostic {
+    namespace Nihilisp {
+        namespace Core {
+            public interface IAtom {
+            }
+        }
+    }
 }
 

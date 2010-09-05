@@ -19,9 +19,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Text.RegularExpressions;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using Foognostic.Nihilisp.Exceptions;
 
 namespace Foognostic {
@@ -36,19 +36,26 @@ namespace Foognostic {
                     return ReadNextForm(new StringReader(text));
                 }
 
-                public delegate IForm FormReader(TextReader stream);
+                public delegate IForm FormReader(TextReader stream, Reader reader);
 
-                private FormReader[] FORM_READERS = { StringFormReader, IntegerFormReader, KeywordFormReader };
+                private FormReader[] FORM_READERS = {
+                    StringFormReader, IntegerFormReader, KeywordFormReader,
+                    VectorFormReader
+                };
 
                 public IForm ReadNextForm(TextReader stream) {
                     IForm form = null;
                     for (int i = 0; form == null && i < FORM_READERS.Length; i++) {
-                        form = FORM_READERS[i](stream);
+                        SkipWhitespace(stream);
+                        if (Empty(stream)) {
+                            return null;
+                        }
+                        form = FORM_READERS[i](stream, this);
                     }
                     return form;
                 }
 
-                public static IForm StringFormReader(TextReader stream) {
+                public static IForm StringFormReader(TextReader stream, Reader reader) {
                     IForm form = null;
                     char cur = Convert.ToChar(stream.Peek());
                     if (cur != '"') {
@@ -58,7 +65,7 @@ namespace Foognostic {
                     bool escaping = false;
                     StringWriter buf = new StringWriter();
 
-                    stream.Read(); // advance past leading quote
+                    SkipChar(stream);
                     do {
                         if (Empty(stream)) {
                             throw new ReaderException("Invalid string literal");
@@ -90,14 +97,14 @@ namespace Foognostic {
                     return form;
                 }
 
-                public static IForm KeywordFormReader(TextReader stream) {
+                public static IForm KeywordFormReader(TextReader stream, Reader reader) {
                     IForm form = null;
                     char cur = Convert.ToChar(stream.Peek());
                     if (cur != ':') {
                         return null;
                     }
 
-                    stream.Read(); // advance past leading :
+                    SkipChar(stream);
                     StringWriter buf = null;
 
                     do {
@@ -134,7 +141,7 @@ namespace Foognostic {
                 // TODO: hex! octal!
                 // TODO: bonus points: variable radix (3r20 == 0x06)
                 // TODO: ratios?
-                public static IForm IntegerFormReader(TextReader stream) {
+                public static IForm IntegerFormReader(TextReader stream, Reader reader) {
                     char cur = Convert.ToChar(stream.Peek());
                     if (!ISDIGIT_PATTERN.Match(cur.ToString()).Success) {
                         return null;
@@ -152,18 +159,77 @@ namespace Foognostic {
                     return NLInteger.Create(buf.ToString());
                 }
 
-                private static bool Empty(TextReader stream) {
+                public static IForm VectorFormReader(TextReader stream, Reader reader) {
+                    char cur = Convert.ToChar(stream.Peek());
+                    if (cur != '[') {
+                        return null;
+                    }
+
+                    NLVector vec = new NLVector();
+                    SkipChar(stream);
+
+                    do {
+                        SkipWhitespace(stream);
+                        IForm form = reader.ReadNextForm(stream);
+                        if (form != null) {
+                            vec.Append(form);
+                        }
+                        SkipWhitespace(stream);
+                        if (Empty(stream)) {
+                            throw new ReaderException("Unterminated vector!");
+                        }
+
+                    } while (PeekChar(stream, out cur) && cur != ']');
+
+                    SkipChar(stream);
+
+                    return vec;
+                }
+
+                public static bool Empty(TextReader stream) {
                     return stream == null || stream.Peek() == -1;
                 }
 
-                private static char ReadChar(TextReader stream) {
+                public static char ReadChar(TextReader stream) {
                     return Convert.ToChar(stream.Read());
+                }
+
+                public static bool PeekChar(TextReader stream, out char c) {
+                    if (Empty(stream)) {
+                        c = '\0';
+                        return false;
+                    }
+                    c = Convert.ToChar(stream.Peek());
+                    return true;
+                }
+
+                public static void SkipChar(TextReader stream) {
+                    if (!Empty(stream)) {
+                        stream.Read();
+                    }
+                }
+
+                public static bool SkipWhitespace(TextReader stream) {
+                    bool skippedAny = false;
+                    char cur;
+                    if (Empty(stream)) {
+                        return false;
+                    }
+                    while (PeekChar(stream, out cur) &&
+                           WHITESPACE_PATTERN.Match(cur.ToString()).Success) {
+                        skippedAny = true;
+                        SkipChar(stream);
+                    }
+                    return skippedAny;
                 }
 
                 private static Regex ISDIGIT_PATTERN = new Regex(@"\d");
                 private static Regex KEYWORD_PATTERN = new Regex(@"[\w\d_]");
+                private static Regex WHITESPACE_PATTERN = new Regex(@"[\s,]");
 
-                private static Dictionary<char, char> ESCAPE_SEQUENCE_MAP = new Dictionary<char, char> { { 'n', '\n' }, { '\\', '\\' }, { '"', '"' } };
+                private static Dictionary<char, char> ESCAPE_SEQUENCE_MAP = new Dictionary<char, char> {
+                    { 'n', '\n' }, { '\\', '\\' }, { '"', '"' }
+                };
             }
         }
     }

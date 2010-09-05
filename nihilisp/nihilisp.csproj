@@ -53,6 +53,7 @@
     <Compile Include="NLList.cs" />
     <Compile Include="ISequence.cs" />
     <Compile Include="NLKeyword.cs" />
+    <Compile Include="NLVector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

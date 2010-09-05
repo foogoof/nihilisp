@@ -37,7 +37,6 @@
     <Reference Include="nunit.framework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="NLObject.cs" />
     <Compile Include="NLClass.cs" />

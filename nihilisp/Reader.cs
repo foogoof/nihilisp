@@ -18,7 +18,6 @@
 // -*- mode: csharp -*-
 ////////////////////////////////////////////////////////////////////////////////
 
-
 using System;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -44,6 +43,8 @@ namespace Foognostic {
                     if (done) {
                         return null;
                     }
+
+                    // Just peek at the stream in case we can't handle what's at the current position.
                     char cur = Convert.ToChar(stream.Peek());
 
                     if (cur == '"') {
@@ -52,7 +53,7 @@ namespace Foognostic {
                         done = Empty(stream);
                         do {
                             if (!done) {
-                                cur = Convert.ToChar(stream.Read());
+                                cur = ReadChar(stream);
                             }
                             if (escaping) {
                                 escaping = false;
@@ -79,19 +80,45 @@ namespace Foognostic {
                             }
                         } while (true);
                     }
+                    else if (':' == cur) {
+                        stream.Read();
+                        done = Empty(stream);
+                        if (done) {
+                            throw new ReaderException("Invalid symbol");
+                        }
+                        // first char of a symbol has more restrictions than subsequent chars
+                        cur = ReadChar(stream);
+                        // TODO: clean this way the hell up
+                        if (cur == '_' || !(new Regex(@"[\w\d]").Match(cur.ToString()).Success)) {
+                            throw new ReaderException("Invalid symbol");
+                        }
+                        buf.Write(cur);
+                        do {
+                            done = Empty(stream);
+                            if (!done) {
+                                cur = ReadChar(stream);
+                                done = !symbol_pattern.Match(cur.ToString()).Success;
+                            }
+                            if (!done) {
+                                buf.Write(cur);
+                            } else {
+                                return NLSymbol.Create(buf.ToString());
+                            }
+                        } while (true);
+                    }
                     // TODO: uh, handle negative numbers :-|
                     // TODO: oh yeah, floats and doubles too.
                     // TODO: hex! octal!
                     // TODO: bonus points: variable radix (3r20 == 0x06)
                     // TODO: ratios?
                     else if (isdigit_pattern.Match(cur.ToString()).Success) {
-                        buf.Write(Convert.ToChar(stream.Read()));
+                        buf.Write(ReadChar(stream));
                         do {
                             done = Empty(stream) || !isdigit_pattern.Match(Convert.ToString(stream.Peek())).Success;
                             if (done) {
                                 return NLInteger.Create(buf.ToString());
                             }
-                            buf.Write(Convert.ToChar(stream.Read()));
+                            buf.Write(ReadChar(stream));
                         } while (true);
                     }
                     return null;
@@ -101,7 +128,12 @@ namespace Foognostic {
                     return stream == null || stream.Peek() == -1;
                 }
 
+                private static char ReadChar(TextReader stream) {
+                    return Convert.ToChar(stream.Read());
+                }
+
                 private static Regex isdigit_pattern = new Regex(@"\d");
+                private static Regex symbol_pattern = new Regex(@"[\w\d_]");
 
                 private static Dictionary<char, char> escape_sequence_map = new Dictionary<char, char>() {
                     { 'n', '\n' },

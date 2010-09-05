@@ -18,12 +18,34 @@
 // -*- mode: csharp -*-
 ////////////////////////////////////////////////////////////////////////////////
 using Foognostic.Nihilisp.Core;
+using System;
 
 namespace Foognostic {
     namespace Nihilisp {
         namespace Core {
-            public class NLSymbol : NLObject, IAtom {
-                public NLSymbol () { }
+            public class NLSymbol : NLObject, IAtom, IForm {
+                private string _val;
+                public string val {
+                    get { return _val; }
+                }
+
+                public static NLSymbol Create (string str) {
+                    NLSymbol inst = new NLSymbol();
+                    inst._val = str;
+                    return inst;
+                }
+
+                public IForm[] Contents {
+                    get {
+                        IForm[] forms = new IForm[1];
+                        forms[0] = this;
+                        return forms;
+                    }
+                }
+
+                public string Printable() {
+                    return String.Format("#<[NLSymbol] [:{0}]>", this._val);
+                }
             }
         }
     }

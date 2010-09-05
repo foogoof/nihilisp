@@ -84,25 +84,25 @@ namespace Foognostic {
                         stream.Read();
                         done = Empty(stream);
                         if (done) {
-                            throw new ReaderException("Invalid symbol");
+                            throw new ReaderException("Invalid keyword");
                         }
-                        // first char of a symbol has more restrictions than subsequent chars
+                        // first char of a keyword has more restrictions than subsequent chars
                         cur = ReadChar(stream);
                         // TODO: clean this way the hell up
                         if (cur == '_' || !(new Regex(@"[\w\d]").Match(cur.ToString()).Success)) {
-                            throw new ReaderException("Invalid symbol");
+                            throw new ReaderException("Invalid keyword");
                         }
                         buf.Write(cur);
                         do {
                             done = Empty(stream);
                             if (!done) {
                                 cur = ReadChar(stream);
-                                done = !symbol_pattern.Match(cur.ToString()).Success;
+                                done = !keyword_pattern.Match(cur.ToString()).Success;
                             }
                             if (!done) {
                                 buf.Write(cur);
                             } else {
-                                return NLSymbol.Create(buf.ToString());
+                                return NLKeyword.Create(buf.ToString());
                             }
                         } while (true);
                     }
@@ -133,7 +133,7 @@ namespace Foognostic {
                 }
 
                 private static Regex isdigit_pattern = new Regex(@"\d");
-                private static Regex symbol_pattern = new Regex(@"[\w\d_]");
+                private static Regex keyword_pattern = new Regex(@"[\w\d_]");
 
                 private static Dictionary<char, char> escape_sequence_map = new Dictionary<char, char>() {
                     { 'n', '\n' },

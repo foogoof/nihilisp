@@ -42,7 +42,6 @@
     <Compile Include="NLClass.cs" />
     <Compile Include="NLString.cs" />
     <Compile Include="NLInteger.cs" />
-    <Compile Include="NLSymbol.cs" />
     <Compile Include="IAtom.cs" />
     <Compile Include="Reader.cs" />
     <Compile Include="TestReader.cs" />
@@ -51,6 +50,9 @@
     <Compile Include="IForm.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="REPL.cs" />
+    <Compile Include="NLList.cs" />
+    <Compile Include="ISequence.cs" />
+    <Compile Include="NLKeyword.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

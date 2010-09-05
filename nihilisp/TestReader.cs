@@ -30,7 +30,7 @@ namespace Foognostic {
             public class TestReader {
 
                 [Test()]
-                public void TestSimpleInteger () {
+                public void TestSimpleInteger() {
                     long expected = 42, actual = 0;
                     IForm form = new Reader().ReadFirstForm("42");
                     Assert.IsNotNull(form);
@@ -41,12 +41,23 @@ namespace Foognostic {
                 }
 
                 [Test()]
-                public void TestSimpleString () {
+                public void TestSimpleString() {
                     string expected = "42", actual = "";
                     IForm form = new Reader().ReadFirstForm("\"42\"");
                     Assert.IsNotNull(form);
 
                     NLString nlstr = (NLString)form;
+                    actual = nlstr.val;
+                    Assert.AreEqual(expected, actual);
+                }
+
+                [Test()]
+                public void TestSimpleKeyword() {
+                    string expected = ":foo", actual = "";
+                    IForm form = new Reader().ReadFirstForm(":foo");
+                    Assert.IsNotNull(form);
+
+                    NLKeyword nlstr = (NLKeyword)form;
                     actual = nlstr.val;
                     Assert.AreEqual(expected, actual);
                 }

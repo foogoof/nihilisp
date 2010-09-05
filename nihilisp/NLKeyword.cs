@@ -31,7 +31,11 @@ namespace Foognostic {
 
                 public static NLKeyword Create (string str) {
                     NLKeyword inst = new NLKeyword();
-                    inst._val = str;
+                    if (str.StartsWith(":")) {
+                        inst._val = str;
+                    } else {
+                        inst._val = ':' + str;
+                    }
                     return inst;
                 }
 
@@ -44,7 +48,7 @@ namespace Foognostic {
                 }
 
                 public string Printable() {
-                    return String.Format("#<[NLKeyword] [:{0}]>", this._val);
+                    return String.Format("#<[NLKeyword] [{0}]>", this._val);
                 }
             }
         }

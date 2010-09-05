@@ -41,9 +41,8 @@ namespace Foognostic {
 
                 public IForm[] Contents {
                     get {
-                        IForm[] forms = new IForm[1];
-                        forms[0] = this;
-                        return forms;
+                        IForm[] ret = { this };
+                        return ret;
                     }
                 }
 

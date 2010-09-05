@@ -29,99 +29,127 @@ namespace Foognostic {
         namespace Core {
             public class Reader {
 
-                public Reader () {
+                public Reader() {
                 }
 
                 public IForm ReadFirstForm(string text) {
                     return ReadNextForm(new StringReader(text));
                 }
 
-                public IForm ReadNextForm(TextReader stream) {
-                    StringWriter buf = new StringWriter();
+                public delegate IForm FormReader(TextReader stream);
 
-                    bool done = Empty(stream);
-                    if (done) {
+                private FormReader[] FORM_READERS = { StringFormReader, IntegerFormReader, KeywordFormReader };
+
+                public IForm ReadNextForm(TextReader stream) {
+                    IForm form = null;
+                    for (int i = 0; form == null && i < FORM_READERS.Length; i++) {
+                        form = FORM_READERS[i](stream);
+                    }
+                    return form;
+                }
+
+                public static IForm StringFormReader(TextReader stream) {
+                    IForm form = null;
+                    char cur = Convert.ToChar(stream.Peek());
+                    if (cur != '"') {
                         return null;
                     }
 
-                    // Just peek at the stream in case we can't handle what's at the current position.
-                    char cur = Convert.ToChar(stream.Peek());
+                    bool escaping = false;
+                    StringWriter buf = new StringWriter();
 
-                    if (cur == '"') {
-                        bool escaping = false;
-                        stream.Read(); // advance past initial quote
-                        done = Empty(stream);
-                        do {
-                            if (!done) {
-                                cur = ReadChar(stream);
-                            }
-                            if (escaping) {
-                                escaping = false;
-                                if (!escape_sequence_map.ContainsKey(cur)) {
-                                    throw new ReaderException("Unexpected escape sequence \\" + cur);
-                                }
-                                cur = escape_sequence_map[cur];
-                            }
-                            else {
-                                if (cur == '\\') {
-                                    escaping = true;
-                                }
-                                else if (cur == '"') {
-                                    if (!escaping) {
-                                        return NLString.Create(buf.ToString());
-                                    }
-                                } else if (done) {
-                                    throw new ReaderException("Incomplete string literal: " + buf.ToString());
-                                }
-                            }
-
-                            if (!escaping) {
-                                buf.Write(cur);
-                            }
-                        } while (true);
-                    }
-                    else if (':' == cur) {
-                        stream.Read();
-                        done = Empty(stream);
-                        if (done) {
-                            throw new ReaderException("Invalid keyword");
+                    stream.Read(); // advance past leading quote
+                    do {
+                        if (Empty(stream)) {
+                            throw new ReaderException("Invalid string literal");
                         }
-                        // first char of a keyword has more restrictions than subsequent chars
                         cur = ReadChar(stream);
-                        // TODO: clean this way the hell up
-                        if (cur == '_' || !(new Regex(@"[\w\d]").Match(cur.ToString()).Success)) {
-                            throw new ReaderException("Invalid keyword");
-                        }
-                        buf.Write(cur);
-                        do {
-                            done = Empty(stream);
-                            if (!done) {
-                                cur = ReadChar(stream);
-                                done = !keyword_pattern.Match(cur.ToString()).Success;
+                        if (escaping) {
+                            escaping = false;
+                            if (!ESCAPE_SEQUENCE_MAP.ContainsKey(cur)) {
+                                throw new ReaderException("Unexpected escape sequence \\" + cur);
                             }
-                            if (!done) {
+                            cur = ESCAPE_SEQUENCE_MAP[cur];
+                        }
+                        else {
+                            if (cur == '\\') {
+                                escaping = true;
+                            }
+                            else if (cur == '"') {
+                                if (!escaping) {
+                                    form = NLString.Create(buf.ToString());
+                                }
+                            }
+                        }
+
+                        if (form == null && !escaping) {
+                            buf.Write(cur);
+                        }
+                    } while (form == null);
+
+                    return form;
+                }
+
+                public static IForm KeywordFormReader(TextReader stream) {
+                    IForm form = null;
+                    char cur = Convert.ToChar(stream.Peek());
+                    if (cur != ':') {
+                        return null;
+                    }
+
+                    stream.Read(); // advance past leading :
+                    StringWriter buf = null;
+
+                    do {
+                        if (Empty(stream)) {
+                            if (buf == null) {
+                                throw new ReaderException("Invalid keyword");
+                            }
+                            form = NLKeyword.Create(buf.ToString());
+                        }
+                        else {
+                            cur = ReadChar(stream);
+                            if (buf == null) {
+                                // first character in symbol has more restrictions than subsequent chars
+                                // TODO: clean this way the hell up
+                                if (cur == '_' || !(new Regex(@"[\w\d]").Match(cur.ToString()).Success)) {
+                                    throw new ReaderException("Invalid keyword");
+                                }
+                                buf = new StringWriter();
                                 buf.Write(cur);
                             } else {
-                                return NLKeyword.Create(buf.ToString());
+                                if (!(KEYWORD_PATTERN.Match(cur.ToString()).Success)) {
+                                    throw new ReaderException("Invalid keyword");
+                                }
+                                buf.Write(cur);
                             }
-                        } while (true);
+                        }
+                    } while (form == null);
+
+                    return form;
+                }
+
+                // TODO: uh, handle negative numbers :-|
+                // TODO: oh yeah, floats and doubles too.
+                // TODO: hex! octal!
+                // TODO: bonus points: variable radix (3r20 == 0x06)
+                // TODO: ratios?
+                public static IForm IntegerFormReader(TextReader stream) {
+                    char cur = Convert.ToChar(stream.Peek());
+                    if (!ISDIGIT_PATTERN.Match(cur.ToString()).Success) {
+                        return null;
                     }
-                    // TODO: uh, handle negative numbers :-|
-                    // TODO: oh yeah, floats and doubles too.
-                    // TODO: hex! octal!
-                    // TODO: bonus points: variable radix (3r20 == 0x06)
-                    // TODO: ratios?
-                    else if (isdigit_pattern.Match(cur.ToString()).Success) {
+
+                    StringWriter buf = new StringWriter();
+                    do {
                         buf.Write(ReadChar(stream));
-                        do {
-                            done = Empty(stream) || !isdigit_pattern.Match(Convert.ToString(stream.Peek())).Success;
-                            if (done) {
-                                return NLInteger.Create(buf.ToString());
-                            }
-                            buf.Write(ReadChar(stream));
-                        } while (true);
-                    }
-                    return null;
+                        if (Empty(stream)) {
+                            break;
+                        }
+                        cur = Convert.ToChar(stream.Peek());
+                    } while (ISDIGIT_PATTERN.Match(cur.ToString()).Success);
+
+                    return NLInteger.Create(buf.ToString());
                 }
 
                 private static bool Empty(TextReader stream) {
@@ -132,15 +160,10 @@ namespace Foognostic {
                     return Convert.ToChar(stream.Read());
                 }
 
-                private static Regex isdigit_pattern = new Regex(@"\d");
-                private static Regex keyword_pattern = new Regex(@"[\w\d_]");
+                private static Regex ISDIGIT_PATTERN = new Regex(@"\d");
+                private static Regex KEYWORD_PATTERN = new Regex(@"[\w\d_]");
 
-                private static Dictionary<char, char> escape_sequence_map = new Dictionary<char, char>() {
-                    { 'n', '\n' },
-                    { '\\', '\\' },
-                    { '"', '"' }
-                };
-
+                private static Dictionary<char, char> ESCAPE_SEQUENCE_MAP = new Dictionary<char, char> { { 'n', '\n' }, { '\\', '\\' }, { '"', '"' } };
             }
         }
     }

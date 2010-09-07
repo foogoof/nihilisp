@@ -40,7 +40,7 @@ namespace Foognostic {
 
                 private FormReader[] FORM_READERS = {
                     StringFormReader, IntegerFormReader, KeywordFormReader,
-                    VectorFormReader
+                    VectorFormReader, MapFormReader
                 };
 
                 public IForm ReadNextForm(TextReader stream) {
@@ -97,13 +97,14 @@ namespace Foognostic {
                     return form;
                 }
 
+                // This function needs some love
                 public static IForm KeywordFormReader(TextReader stream, Reader reader) {
-                    IForm form = null;
-                    char cur = Convert.ToChar(stream.Peek());
-                    if (cur != ':') {
+                    char cur;
+                    if (!(PeekChar(stream, out cur) && cur == ':')) {
                         return null;
                     }
 
+                    IForm form = null;
                     SkipChar(stream);
                     StringWriter buf = null;
 
@@ -153,15 +154,15 @@ namespace Foognostic {
                         if (Empty(stream)) {
                             break;
                         }
-                        cur = Convert.ToChar(stream.Peek());
+                        PeekChar(stream, out cur);
                     } while (ISDIGIT_PATTERN.Match(cur.ToString()).Success);
 
                     return NLInteger.Create(buf.ToString());
                 }
 
                 public static IForm VectorFormReader(TextReader stream, Reader reader) {
-                    char cur = Convert.ToChar(stream.Peek());
-                    if (cur != '[') {
+                    char cur;
+                    if (!(PeekChar(stream, out cur) && cur == '[')) {
                         return null;
                     }
 
@@ -184,6 +185,56 @@ namespace Foognostic {
                     SkipChar(stream);
 
                     return vec;
+                }
+
+                public static IForm MapFormReader(TextReader stream, Reader reader) {
+                    char cur;
+                    if (!(PeekChar(stream, out cur) && cur == '{')) {
+                        return null;
+                    }
+
+                    NLMap map = new NLMap();
+                    SkipChar(stream);
+
+                    do {
+                        IForm[] pair = { null, null };
+
+                        SkipWhitespace(stream);
+                        if (Empty(stream)) {
+                            throw new ReaderException("Unterminated map!");
+                        }
+
+                        PeekChar(stream, out cur);
+                        if (cur == '}') {
+                            break;
+                        }
+
+                        pair[0] = reader.ReadNextForm(stream);
+                        if (pair[0] == null) {
+                            throw new ReaderException("Unreadable form in map!");
+                        }
+
+                        SkipWhitespace(stream);
+                        if (Empty(stream)) {
+                            throw new ReaderException("Unterminated map!");
+                        }
+
+                        pair[1] = reader.ReadNextForm(stream);
+                        if (pair[1] == null) {
+                            throw new ReaderException("Unreadable form in map!");
+                        }
+
+                        SkipWhitespace(stream);
+                        if (Empty(stream)) {
+                            throw new ReaderException("Unterminated map!");
+                        }
+
+                        map.Assoc(pair[0], pair[1]);
+                    } while (PeekChar(stream, out cur) && cur != '}');
+
+                    SkipChar(stream);
+
+                    return map;
                 }
 
                 public static bool Empty(TextReader stream) {

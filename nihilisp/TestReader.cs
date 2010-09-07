@@ -95,6 +95,27 @@ namespace Foognostic {
                     NLString sval = (NLString)form.Contents[1];
                     Assert.AreEqual("a", sval.val);
                 }
+
+                [Test()]
+                public void TestMap() {
+                    Reader rdr = new Reader();
+                    IForm form = rdr.ReadFirstForm("{}");
+                    Assert.AreEqual(0, form.Contents.Length);
+
+                    form = rdr.ReadFirstForm("{ 42 \"everything\" }");
+                    Assert.AreEqual(2, form.Contents.Length);
+                    Assert.AreEqual(42, ((NLInteger)form.Contents[0]).val);
+                    Assert.AreEqual("everything", ((NLString)form.Contents[1]).val);
+
+                    form = rdr.ReadFirstForm("{ [0], \"foo\" }");
+                    Assert.AreEqual(2, form.Contents.Length);
+                    Assert.AreEqual(0, ((NLInteger)((NLVector)form.Contents[0]).Contents[0]).val);
+                    Assert.AreEqual("foo", ((NLString)form.Contents[1]).val);
+
+                    // Form equivalence not trivial
+                    // NLMap map = (NLMap)form;
+                    // Assert.AreEqual("everything", map.Get(NLInteger.Create("42")));
+                }
             }
         }
     }

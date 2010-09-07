@@ -97,39 +97,36 @@ namespace Foognostic {
                     return form;
                 }
 
-                // This function needs some love
                 public static IForm KeywordFormReader(TextReader stream, Reader reader) {
                     char cur;
                     if (!(PeekChar(stream, out cur) && cur == ':')) {
                         return null;
                     }
+                    SkipChar(stream);
+
+                    // first char must also not be _ (for now)
+                    if (!PeekChar(stream, out cur) ||
+                        cur == '_' ||
+                        !KEYWORD_PATTERN.Match(cur.ToString()).Success) {
+                        throw new ReaderException("Invalid keyword syntax!");
+                    }
+
+                    StringWriter buf = new StringWriter();
+                    buf.Write(ReadChar(stream));
 
                     IForm form = null;
-                    SkipChar(stream);
-                    StringWriter buf = null;
-
                     do {
                         if (Empty(stream)) {
-                            if (buf == null) {
-                                throw new ReaderException("Invalid keyword");
-                            }
                             form = NLKeyword.Create(buf.ToString());
-                        }
-                        else {
-                            cur = ReadChar(stream);
-                            if (buf == null) {
-                                // first character in symbol has more restrictions than subsequent chars
-                                // TODO: clean this way the hell up
-                                if (cur == '_' || !(new Regex(@"[\w\d]").Match(cur.ToString()).Success)) {
-                                    throw new ReaderException("Invalid keyword");
-                                }
-                                buf = new StringWriter();
-                                buf.Write(cur);
+                        } else {
+                            PeekChar(stream, out cur);
+                            if (WHITESPACE_PATTERN.Match(cur.ToString()).Success) {
+                                form = NLKeyword.Create(buf.ToString());
+                                SkipWhitespace(stream);
+                            } else if (KEYWORD_PATTERN.Match(cur.ToString()).Success) {
+                                buf.Write(ReadChar(stream));
                             } else {
-                                if (!(KEYWORD_PATTERN.Match(cur.ToString()).Success)) {
-                                    throw new ReaderException("Invalid keyword");
-                                }
-                                buf.Write(cur);
+                                throw new ReaderException("Invalid keyword syntax");
                             }
                         }
                     } while (form == null);

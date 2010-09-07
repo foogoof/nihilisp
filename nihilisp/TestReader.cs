@@ -107,10 +107,10 @@ namespace Foognostic {
                     Assert.AreEqual(42, ((NLInteger)form.Contents[0]).val);
                     Assert.AreEqual("everything", ((NLString)form.Contents[1]).val);
 
-                    form = rdr.ReadFirstForm("{ [0], \"foo\" }");
+                    form = rdr.ReadFirstForm("{ [0], :foo }");
                     Assert.AreEqual(2, form.Contents.Length);
                     Assert.AreEqual(0, ((NLInteger)((NLVector)form.Contents[0]).Contents[0]).val);
-                    Assert.AreEqual("foo", ((NLString)form.Contents[1]).val);
+                    Assert.AreEqual(":foo", ((NLKeyword)form.Contents[1]).val);
 
                     // Form equivalence not trivial
                     // NLMap map = (NLMap)form;

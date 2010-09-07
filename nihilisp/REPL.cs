@@ -29,10 +29,10 @@ namespace Foognostic {
                 public static void Main() {
                     Reader arr = new Reader();
 
-                    Console.WriteLine("Welcome to Nihilisp… probably best to abandon all hope ye who dwell here.\n");
+                    Console.Write("Welcome to Nihilisp! Is it meaningful? Doubtful…\n\n");
 
                     do {
-                        Console.Write("nilh> ");
+                        Console.Write("nihil> ");
                         string str = Console.ReadLine().Trim();
                         if (str.Length == 0) {
                             Console.WriteLine("");

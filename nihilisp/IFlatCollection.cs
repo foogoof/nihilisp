@@ -18,39 +18,16 @@
 // -*- mode: csharp -*-
 // /////////////////////////////////////////////////////////////////////////////
 using System;
-using System.Collections.Generic;
-using System.IO;
+
+using Foognostic.Nihilisp.Core;
 
 namespace Foognostic {
     namespace Nihilisp {
         namespace Core {
-            public class NLList : NLClass, IForm, ISequence, IFlatCollection {
-
-                List<IForm> forms;
-
-                public NLList() {
-                    forms = new List<IForm>();
-                }
-
-                public IFlatCollection Append(IForm form) {
-                    forms.Add(form);
-                    return this;
-                }
-
-                public IForm[] Contents {
-                    get {
-                        IForm[] formArr = new IForm[forms.Count];
-                        for (int i = 0; i < forms.Count; i++) {
-                            formArr[i] = forms[i];
-                        }
-                        return formArr;
-                    }
-                }
-
-                public string Printable() {
-                    return String.Format("#<[NLList] [{0}]>", this.forms.Count);
-                }
-             }
+            public interface IFlatCollection {
+                IFlatCollection Append(IForm form);
+            }
         }
     }
 }
+

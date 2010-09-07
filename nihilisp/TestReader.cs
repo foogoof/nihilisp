@@ -97,6 +97,40 @@ namespace Foognostic {
                 }
 
                 [Test()]
+                public void TestList() {
+                    Reader rdr = new Reader();
+                    IForm form = rdr.ReadFirstForm("( )");
+                    Assert.IsNotNull(form);
+                    Assert.AreEqual(0, form.Contents.Length);
+
+                    form = rdr.ReadFirstForm("(1)");
+                    Assert.IsNotNull(form);
+                    Assert.AreEqual(1, form.Contents.Length);
+                    NLInteger ival = (NLInteger)form.Contents[0];
+                    Assert.AreEqual(1, ival.val);
+
+                    form = rdr.ReadFirstForm("( 1, 2)");
+                    Assert.IsNotNull(form);
+                    Assert.AreEqual(2, form.Contents.Length);
+
+                    ival = (NLInteger)form.Contents[0];
+                    Assert.AreEqual(1, ival.val);
+
+                    ival = (NLInteger)form.Contents[1];
+                    Assert.AreEqual(2, ival.val);
+
+                    form = rdr.ReadFirstForm(" ( [, 42 ] \"a\" )");
+                    Assert.IsNotNull(form);
+                    Assert.AreEqual(2, form.Contents.Length);
+
+                    NLVector vval = (NLVector)form.Contents[0];
+                    Assert.AreEqual(42, ((NLInteger)vval.Contents[0]).val);
+
+                    NLString sval = (NLString)form.Contents[1];
+                    Assert.AreEqual("a", sval.val);
+                }
+
+                [Test()]
                 public void TestMap() {
                     Reader rdr = new Reader();
                     IForm form = rdr.ReadFirstForm("{}");

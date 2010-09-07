@@ -40,7 +40,7 @@ namespace Foognostic {
 
                 private FormReader[] FORM_READERS = {
                     StringFormReader, IntegerFormReader, KeywordFormReader,
-                    VectorFormReader, MapFormReader
+                    VectorFormReader, MapFormReader, ListFormReader
                 };
 
                 public IForm ReadNextForm(TextReader stream) {
@@ -97,6 +97,7 @@ namespace Foognostic {
                     return form;
                 }
 
+                // ugh, still has some errors
                 public static IForm KeywordFormReader(TextReader stream, Reader reader) {
                     char cur;
                     if (!(PeekChar(stream, out cur) && cur == ':')) {
@@ -157,31 +158,48 @@ namespace Foognostic {
                     return NLInteger.Create(buf.ToString());
                 }
 
-                public static IForm VectorFormReader(TextReader stream, Reader reader) {
+                // FIXME: this is probably not idiomatic
+                public delegate IFlatCollection FormFactory();
+                public static IFlatCollection VectorFactory() {
+                    return new NLVector();
+                }
+                public static IFlatCollection ListFactory() {
+                    return new NLList();
+                }
+
+                public static IFlatCollection FlatCollectionFormReader(TextReader stream, Reader reader, char open, char close, FormFactory factory) {
                     char cur;
-                    if (!(PeekChar(stream, out cur) && cur == '[')) {
+                    if (!(PeekChar(stream, out cur) && cur == open)) {
                         return null;
                     }
 
-                    NLVector vec = new NLVector();
+                    IFlatCollection coll = factory();
                     SkipChar(stream);
 
                     do {
                         SkipWhitespace(stream);
                         IForm form = reader.ReadNextForm(stream);
                         if (form != null) {
-                            vec.Append(form);
+                            coll.Append(form);
                         }
                         SkipWhitespace(stream);
                         if (Empty(stream)) {
                             throw new ReaderException("Unterminated vector!");
                         }
 
-                    } while (PeekChar(stream, out cur) && cur != ']');
+                    } while (PeekChar(stream, out cur) && cur != close);
 
                     SkipChar(stream);
 
-                    return vec;
+                    return coll;
+                }
+
+                public static IForm VectorFormReader(TextReader stream, Reader reader) {
+                    return (IForm) FlatCollectionFormReader(stream, reader, '[', ']', VectorFactory);
+                }
+
+                public static IForm ListFormReader(TextReader stream, Reader reader) {
+                    return (IForm) FlatCollectionFormReader(stream, reader, '(', ')', ListFactory);
                 }
 
                 public static IForm MapFormReader(TextReader stream, Reader reader) {

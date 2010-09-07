@@ -24,7 +24,7 @@ using Foognostic.Nihilisp.Core;
 namespace Foognostic {
     namespace Nihilisp {
         namespace Core {
-            public class NLVector : NLClass, IForm, ISequence {
+            public class NLVector : NLClass, IForm, ISequence, IFlatCollection {
                 public NLVector() {
                     _val = new IForm[0];
                     _list = new List<IForm>();
@@ -46,7 +46,7 @@ namespace Foognostic {
                     }
                 }
 
-                public NLVector Append(IForm form) {
+                public IFlatCollection Append(IForm form) {
                     _list.Add(form);
                     return this;
                 }

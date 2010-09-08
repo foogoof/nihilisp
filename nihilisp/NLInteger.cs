@@ -18,7 +18,6 @@
 // -*- mode: csharp -*-
 ////////////////////////////////////////////////////////////////////////////////
 using System;
-using Foognostic.Nihilisp.Core;
 
 namespace Foognostic {
     namespace Nihilisp {

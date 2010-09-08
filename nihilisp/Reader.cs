@@ -278,9 +278,6 @@ namespace Foognostic {
                 public static bool SkipWhitespace(TextReader stream) {
                     bool skippedAny = false;
                     char cur;
-                    if (Empty(stream)) {
-                        return false;
-                    }
                     while (PeekChar(stream, out cur) &&
                            WHITESPACE_PATTERN.Match(cur.ToString()).Success) {
                         skippedAny = true;
@@ -300,4 +297,3 @@ namespace Foognostic {
         }
     }
 }
-

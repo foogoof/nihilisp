@@ -19,7 +19,6 @@
 // /////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Collections.Generic;
-using Foognostic.Nihilisp.Core;
 
 namespace Foognostic {
     namespace Nihilisp {

@@ -40,7 +40,7 @@ namespace Foognostic {
 
                 private FormReader[] FORM_READERS = {
                     StringFormReader, IntegerFormReader, KeywordFormReader,
-                    VectorFormReader, MapFormReader, ListFormReader
+                    VectorFormReader, MapFormReader, ListFormReader, SymbolFormReader
                 };
 
                 public IForm ReadNextForm(TextReader stream) {
@@ -95,6 +95,26 @@ namespace Foognostic {
                     } while (form == null);
 
                     return form;
+                }
+
+                public static IForm SymbolFormReader(TextReader stream, Reader reader) {
+                    char cur;
+                    StringWriter buf = null;
+
+                    do {
+                        if (!PeekChar(stream, out cur) || !SYMBOL_PATTERN.Match(cur.ToString()).Success) {
+                            break;
+                        }
+                        if (buf == null) {
+                            buf = new StringWriter();
+                        }
+                        buf.Write(ReadChar(stream));
+                    } while (true);
+
+                    if (buf == null) {
+                        return null;
+                    }
+                    return NLSymbol.Create(buf.ToString());
                 }
 
                 // ugh, still has some errors
@@ -289,6 +309,8 @@ namespace Foognostic {
                 private static Regex ISDIGIT_PATTERN = new Regex(@"\d");
                 private static Regex KEYWORD_PATTERN = new Regex(@"[\w\d_]");
                 private static Regex WHITESPACE_PATTERN = new Regex(@"[\s,]");
+                private static Regex SYMBOL_PATTERN = new Regex(@"[a-zA-Z$!¡?¿%^&+-/*=_|<>≤≥…√ø:∞λ∏∑]");
+                // TODO: implement comments
 
                 private static Dictionary<char, char> ESCAPE_SEQUENCE_MAP = new Dictionary<char, char> {
                     { 'n', '\n' }, { '\\', '\\' }, { '"', '"' }

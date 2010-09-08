@@ -56,6 +56,7 @@
     <Compile Include="NLVector.cs" />
     <Compile Include="NLMap.cs" />
     <Compile Include="IFlatCollection.cs" />
+    <Compile Include="NLSymbol.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

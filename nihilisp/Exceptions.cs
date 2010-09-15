@@ -30,6 +30,15 @@ namespace Foognostic {
                                           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
             }
 
+            public class EvaluatorException : System.ApplicationException {
+                public EvaluatorException() {}
+                public EvaluatorException(string message) : base(message) { }
+                public EvaluatorException(string message, System.Exception inner) : base(message, inner) {}
+
+                protected EvaluatorException(System.Runtime.Serialization.SerializationInfo info,
+                                          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+            }
+
             public class InternalException : System.ApplicationException {
                 public InternalException() {}
                 public InternalException(string message) : base(message) { }

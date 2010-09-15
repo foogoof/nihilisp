@@ -28,6 +28,7 @@ namespace Foognostic {
                 public REPL () { }
                 public static void Main() {
                     Reader arr = new Reader();
+                    Evaluator eval = new Evaluator();
 
                     Console.Write("Welcome to Nihilisp! Is it meaningful? Doubtful…\n\n");
 
@@ -44,7 +45,11 @@ namespace Foognostic {
                             if (form == null) {
                                 throw new Exception("uh, couldn't read " + str);
                             }
-                            Console.WriteLine(form.Printable());
+                            if (form.GetType() == typeof(NLList)) {
+                                eval.Evaluate(form);
+                            } else {
+                                Console.WriteLine(form.Printable());
+                            }
                         } catch (ReaderException rex) {
                             Console.WriteLine("Reader exception: " + rex.Message);
                             Console.WriteLine(rex.StackTrace);

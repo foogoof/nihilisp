@@ -157,6 +157,10 @@ namespace Foognostic {
                     IForm form = rdr.ReadFirstForm("foo");
                     Assert.AreEqual("foo", ((NLSymbol)form.Contents[0]).val);
                     Assert.AreEqual("?", ((NLSymbol)rdr.ReadFirstForm(" ?").Contents[0]).val);
+
+                    NLSymbol sym = (NLSymbol)rdr.ReadFirstForm("foo.bar");
+                    Assert.AreEqual("foo", sym.Namespace);
+                    Assert.AreEqual("bar", sym.FunctionName);
                 }
             }
         }

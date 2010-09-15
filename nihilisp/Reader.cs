@@ -45,6 +45,8 @@ namespace Foognostic {
 
                 public IForm ReadNextForm(TextReader stream) {
                     IForm form = null;
+                    char cur;
+                    PeekChar(stream, out cur);
                     for (int i = 0; form == null && i < FORM_READERS.Length; i++) {
                         SkipWhitespace(stream);
                         if (Empty(stream)) {
@@ -52,6 +54,14 @@ namespace Foognostic {
                         }
                         form = FORM_READERS[i](stream, this);
                     }
+#if DEBUG
+                    if (form == null) {
+                        System.Console.WriteLine("*** warning: Couldn't read form starting at " + cur);
+                    } else {
+                        System.Console.WriteLine("*** info: read a " + form.GetType().ToString());
+                    }
+#endif
+
                     return form;
                 }
 

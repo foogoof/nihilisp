@@ -28,6 +28,54 @@ namespace Foognostic {
                     get { return _val; }
                 }
 
+                // FIXME: Wow this seems naive
+                public string Namespace {
+                    get {
+                        if (_val == null || _val.Length == 0) {
+                            return null;
+                        }
+
+                        int last_dot = _val.LastIndexOf('.');
+                        if (-1 == last_dot) {
+                            return null;
+                        }
+
+                        return _val.Substring(0, last_dot);
+                    }
+                }
+
+                // FIXME: Wow this is not DRY
+                public string FunctionName {
+                    get {
+                        if (_val == null || _val.Length == 0) {
+                            return null;
+                        }
+
+                        int last_dot = _val.LastIndexOf('.');
+                        if (-1 == last_dot || (1 + last_dot) == _val.Length) {
+                            return null;
+                        }
+
+                        return _val.Substring(1 + last_dot);
+                    }
+                }
+
+                // FIXME: Why stop now?
+                public string Assembly {
+                    get {
+                        string ns = this.Namespace;
+                        if (ns == null || ns.Length == 0) {
+                            return null;
+                        }
+                        int first_dot = ns.IndexOf('.');
+                        if (-1 == first_dot || (1 + first_dot == ns.Length)) {
+                            return null;
+                        }
+                        return ns.Substring(0, first_dot);
+                    }
+                }
+
+
                 public NLSymbol() {
                 }
 

@@ -162,6 +162,12 @@ namespace Foognostic {
                     Assert.AreEqual("foo", sym.Namespace);
                     Assert.AreEqual("bar", sym.FunctionName);
                 }
+
+                [Test()]
+                public void TestMt() {
+                    Foognostic.MersenneTwister mt = new Foognostic.MersenneTwister();
+                    mt.GenRand();
+                }
             }
         }
     }

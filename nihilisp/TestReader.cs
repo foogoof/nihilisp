@@ -21,6 +21,7 @@
 using System;
 using NUnit.Framework;
 using Foognostic.Nihilisp.Core;
+using Foognostic.PRNG;
 
 namespace Foognostic {
     namespace Nihilisp {
@@ -32,119 +33,116 @@ namespace Foognostic {
                 [Test()]
                 public void TestSimpleInteger() {
                     long expected = 42, actual = 0;
-                    IForm form = new Reader().ReadFirstForm("42");
+                    object form = new Reader().ReadFirstForm("42");
                     Assert.IsNotNull(form);
-
-                    NLInteger nlint = (NLInteger)form;
-                    actual = nlint.val;
+                    actual = (long)form;
                     Assert.AreEqual(expected, actual);
                 }
 
                 [Test()]
                 public void TestSimpleString() {
                     string expected = "42", actual = "";
-                    IForm form = new Reader().ReadFirstForm("\"42\"");
+                    object form = new Reader().ReadFirstForm("\"42\"");
                     Assert.IsNotNull(form);
 
-                    NLString nlstr = (NLString)form;
-                    actual = nlstr.val;
+                    actual = (string)form;
                     Assert.AreEqual(expected, actual);
                 }
 
                 [Test()]
                 public void TestSimpleKeyword() {
                     string expected = ":foo", actual = "";
-                    IForm form = new Reader().ReadFirstForm(":foo");
+                    object form = new Reader().ReadFirstForm(":foo");
                     Assert.IsNotNull(form);
 
                     NLKeyword nlstr = (NLKeyword)form;
-                    actual = nlstr.val;
+                    actual = nlstr.ToString();
                     Assert.AreEqual(expected, actual);
                 }
 
                 [Test()]
                 public void TestVector() {
                     Reader rdr = new Reader();
-                    IForm form = rdr.ReadFirstForm("[]");
-                    Assert.IsNotNull(form);
-                    Assert.AreEqual(0, form.Contents.Length);
+                    NLVector vec = (NLVector)rdr.ReadFirstForm("[]");
+                    Assert.IsNotNull(vec);
+                    Assert.AreEqual(0, vec.Contents.Length);
 
-                    form = rdr.ReadFirstForm("[1]");
-                    Assert.IsNotNull(form);
-                    Assert.AreEqual(1, form.Contents.Length);
-                    NLInteger ival = (NLInteger)form.Contents[0];
-                    Assert.AreEqual(1, ival.val);
+                    vec = (NLVector) rdr.ReadFirstForm("[1]");
+                    Assert.IsNotNull(vec);
+                    Assert.AreEqual(1, vec.Contents.Length);
+                    long ival = (long)vec.Contents[0];
+                    Assert.AreEqual(1, ival);
 
-                    form = rdr.ReadFirstForm("[ 1, 2]");
-                    Assert.IsNotNull(form);
-                    Assert.AreEqual(2, form.Contents.Length);
+                    vec = (NLVector)rdr.ReadFirstForm("[ 1, 2]");
+                    Assert.IsNotNull(vec);
+                    Assert.AreEqual(2, vec.Contents.Length);
 
-                    ival = (NLInteger)form.Contents[0];
-                    Assert.AreEqual(1, ival.val);
+                    ival = (long)vec.Contents[0];
+                    Assert.AreEqual(1, ival);
 
-                    ival = (NLInteger)form.Contents[1];
-                    Assert.AreEqual(2, ival.val);
+                    ival = (long)vec.Contents[1];
+                    Assert.AreEqual(2, ival);
 
-                    form = rdr.ReadFirstForm(" [ [, 42 ] \"a\" ]");
-                    Assert.IsNotNull(form);
-                    Assert.AreEqual(2, form.Contents.Length);
+                    vec = (NLVector)rdr.ReadFirstForm(" [ [, 42 ] \"a\" ]");
+                    Assert.IsNotNull(vec);
+                    Assert.AreEqual(2, vec.Contents.Length);
 
-                    NLVector vval = (NLVector)form.Contents[0];
-                    Assert.AreEqual(42, ((NLInteger)vval.Contents[0]).val);
+                    NLVector vval = (NLVector)vec.Contents[0];
+                    Assert.AreEqual(42, (long)vval.Contents[0]);
 
-                    NLString sval = (NLString)form.Contents[1];
-                    Assert.AreEqual("a", sval.val);
+                    string sval = (string)vec.Contents[1];
+                    Assert.AreEqual("a", sval);
                 }
 
                 [Test()]
                 public void TestList() {
                     Reader rdr = new Reader();
-                    IForm form = rdr.ReadFirstForm("( )");
-                    Assert.IsNotNull(form);
-                    Assert.AreEqual(0, form.Contents.Length);
+                    NLList list = (NLList)rdr.ReadFirstForm("( )");
+                    Assert.IsNotNull(list);
+                    Assert.AreEqual(0, list.Contents.Length);
 
-                    form = rdr.ReadFirstForm("(1)");
-                    Assert.IsNotNull(form);
-                    Assert.AreEqual(1, form.Contents.Length);
-                    NLInteger ival = (NLInteger)form.Contents[0];
-                    Assert.AreEqual(1, ival.val);
+                    list = (NLList)rdr.ReadFirstForm("(1)");
+                    Assert.IsNotNull(list);
+                    Assert.AreEqual(1, list.Contents.Length);
+                    long ival = (long)list.Contents[0];
+                    Assert.AreEqual(1, ival);
 
-                    form = rdr.ReadFirstForm("( 1, 2)");
-                    Assert.IsNotNull(form);
-                    Assert.AreEqual(2, form.Contents.Length);
+                    list = (NLList)rdr.ReadFirstForm("( 1, 2)");
+                    Assert.IsNotNull(list);
+                    Assert.AreEqual(2, list.Contents.Length);
 
-                    ival = (NLInteger)form.Contents[0];
-                    Assert.AreEqual(1, ival.val);
+                    ival = (long)list.Contents[0];
+                    Assert.AreEqual(1, ival);
 
-                    ival = (NLInteger)form.Contents[1];
-                    Assert.AreEqual(2, ival.val);
+                    ival = (long)list.Contents[1];
+                    Assert.AreEqual(2, ival);
 
-                    form = rdr.ReadFirstForm(" ( [, 42 ] \"a\" )");
-                    Assert.IsNotNull(form);
-                    Assert.AreEqual(2, form.Contents.Length);
+                    list = (NLList)rdr.ReadFirstForm(" ( [, 42 ] \"a\" )");
+                    Assert.IsNotNull(list);
+                    Assert.AreEqual(2, list.Contents.Length);
 
-                    NLVector vval = (NLVector)form.Contents[0];
-                    Assert.AreEqual(42, ((NLInteger)vval.Contents[0]).val);
+                    NLVector vval = (NLVector)list.Contents[0];
+                    Assert.AreEqual(42, (long)vval.Contents[0]);
 
-                    NLString sval = (NLString)form.Contents[1];
-                    Assert.AreEqual("a", sval.val);
+                    string sval = (string)list.Contents[1];
+                    Assert.AreEqual("a", sval);
                 }
 
                 [Test()]
                 public void TestMap() {
                     Reader rdr = new Reader();
-                    IForm form = rdr.ReadFirstForm("{}");
-                    Assert.AreEqual(0, form.Contents.Length);
+                    NLMap map = (NLMap)rdr.ReadFirstForm("{}");
+                    Assert.AreEqual(0, map.Contents.Length);
 
-                    form = rdr.ReadFirstForm("{ 42 \"everything\" }");
-                    Assert.AreEqual(2, form.Contents.Length);
-                    Assert.AreEqual(42, ((NLInteger)form.Contents[0]).val);
-                    Assert.AreEqual("everything", ((NLString)form.Contents[1]).val);
+                    map = (NLMap)rdr.ReadFirstForm("{ 42 \"everything\" }");
+                    Assert.AreEqual(2, map.Contents.Length);
+                    Assert.AreEqual(42, (long)map.Contents[0]);
+                    Assert.AreEqual("everything", (string)map.Contents[1]);
 
-                    form = rdr.ReadFirstForm("{ [0], :foo }");
-                    Assert.AreEqual(2, form.Contents.Length, 2);
-                    Assert.AreEqual(0, ((NLInteger)((NLVector)form.Contents[0]).Contents[0]).val, 0);
-                    Assert.AreEqual(":foo", ((NLKeyword)form.Contents[1]).val);
+                    map = (NLMap)rdr.ReadFirstForm("{ [0], :foo }");
+                    Assert.AreEqual(2, map.Contents.Length);
+                    Assert.AreEqual(0, (long)((NLVector)map.Contents[0]).Contents[0]);
+                    Assert.AreEqual(":foo", ((NLKeyword)map.Contents[1]).ToString());
 
                     // Form equivalence not trivial
                     // NLMap map = (NLMap)form;
@@ -154,18 +152,17 @@ namespace Foognostic {
                 [Test()]
                 public void TestSymbol() {
                     Reader rdr = new Reader();
-                    IForm form = rdr.ReadFirstForm("foo");
-                    Assert.AreEqual("foo", ((NLSymbol)form.Contents[0]).val);
-                    Assert.AreEqual("?", ((NLSymbol)rdr.ReadFirstForm(" ?").Contents[0]).val);
+                    NLSymbol sym = (NLSymbol)rdr.ReadFirstForm("foo");
+                    Assert.AreEqual("foo", sym.ToString());
 
-                    NLSymbol sym = (NLSymbol)rdr.ReadFirstForm("foo.bar");
+                    sym = (NLSymbol)rdr.ReadFirstForm("foo.bar");
                     Assert.AreEqual("foo", sym.Namespace);
                     Assert.AreEqual("bar", sym.FunctionName);
                 }
 
                 [Test()]
                 public void TestMt() {
-                    Foognostic.MersenneTwister mt = new Foognostic.MersenneTwister();
+                    MersenneTwister mt = new MersenneTwister();
                     mt.GenRand();
                 }
             }

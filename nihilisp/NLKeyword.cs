@@ -22,7 +22,7 @@ using System;
 namespace Foognostic {
     namespace Nihilisp {
         namespace Core {
-            public class NLKeyword : NLObject, IAtom, IForm {
+            public class NLKeyword {
                 private string _val;
                 public string val {
                     get { return _val; }
@@ -38,15 +38,19 @@ namespace Foognostic {
                     return inst;
                 }
 
-                public IForm[] Contents {
+                public object[] Contents {
                     get {
-                        IForm[] ret = { this };
+                        object[] ret = { this };
                         return ret;
                     }
                 }
 
                 public string Printable() {
                     return String.Format("#<[NLKeyword] [{0}]>", this._val);
+                }
+
+                override public string ToString() {
+                    return _val;
                 }
             }
         }

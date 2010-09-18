@@ -1,17 +1,17 @@
 // //////////////////////////////////////////////////////////////////////////////
 // Copyright 2010 Seth Schroeder
 // This file is part of Nihilisp.
-// 
+//
 // Nihilisp is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Nihilisp is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with Nihilisp.  If not, see <http://www.gnu.org/licenses/>.
 // /////////////////////////////////////////////////////////////////////////////
@@ -30,14 +30,13 @@ namespace Foognostic {
 
                 // FIXME TODO WARNING
                 // This whole method sucks and will be ruthlessly refactored
-                public Evaluator Evaluate(IForm form) {
+                public object Evaluate(object form) {
                     if (form == null) {
                         throw new ArgumentNullException("No form supplied!");
                     }
 
                     if (form.GetType() != typeof(NLList)) {
-                        Console.WriteLine("Y'all ain't no list!");
-                        return this;
+                        return form.ToString();
                     }
 
                     NLList items = (NLList)form;
@@ -47,10 +46,10 @@ namespace Foognostic {
 
                     NLSymbol symbol = (NLSymbol)items.Contents[0];
                     MethodInfo methodInfo = null;
-                    IForm[] args = {};
+                    object[] args = {};
 
                     if  (items.Contents.Length > 1) {
-                        args = new IForm[items.Contents.Length - 1];
+                        args = new object[items.Contents.Length - 1];
                         // FIXME: Seriously, me?
                         for (int i = 1; i < items.Contents.Length; i++) {
                             args[i - 1] = items.Contents[i];
@@ -86,7 +85,7 @@ namespace Foognostic {
 
                         for (int j = 0; j < args.Length; j++) {
                             ParameterInfo param = info.GetParameters()[j];
-                            IForm formArg = args[j];
+                            object formArg = args[j];
 
                             if (param == null || formArg == null) {
                                 paramTypeMismatch = true;
@@ -97,8 +96,8 @@ namespace Foognostic {
                             // FIXME: This is another good place to start decrapping.
                             // Need a good way to compare incoming forms with actual method signatures
                             if (pt == typeof(System.String)) {
-                                NLString str = (NLString)formArg;
-                                callingArgs[j] = str.val;
+                                string str = (string)formArg;
+                                callingArgs[j] = str;
                                 methodInfo = info;
                             }
                         }
@@ -118,7 +117,7 @@ namespace Foognostic {
                         throw new EvaluatorException("Couldn't match args!");
                     }
 
-                    return this;
+                    return form;
                 }
             }
         }

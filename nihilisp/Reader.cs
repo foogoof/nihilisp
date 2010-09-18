@@ -32,19 +32,19 @@ namespace Foognostic {
                 public Reader() {
                 }
 
-                public IForm ReadFirstForm(string text) {
+                public object ReadFirstForm(string text) {
                     return ReadNextForm(new StringReader(text));
                 }
 
-                public delegate IForm FormReader(TextReader stream, Reader reader);
+                public delegate object FormReader(TextReader stream, Reader reader);
 
                 private FormReader[] FORM_READERS = {
                     StringFormReader, IntegerFormReader, KeywordFormReader,
                     VectorFormReader, MapFormReader, ListFormReader, SymbolFormReader
                 };
 
-                public IForm ReadNextForm(TextReader stream) {
-                    IForm form = null;
+                public object ReadNextForm(TextReader stream) {
+                    object form = null;
                     char cur;
                     PeekChar(stream, out cur);
                     for (int i = 0; form == null && i < FORM_READERS.Length; i++) {
@@ -57,16 +57,14 @@ namespace Foognostic {
 #if DEBUG
                     if (form == null) {
                         System.Console.WriteLine("*** warning: Couldn't read form starting at " + cur);
-                    } else {
-                        System.Console.WriteLine("*** info: read a " + form.GetType().ToString());
                     }
 #endif
 
                     return form;
                 }
 
-                public static IForm StringFormReader(TextReader stream, Reader reader) {
-                    IForm form = null;
+                public static object StringFormReader(TextReader stream, Reader reader) {
+                    object form = null;
                     char cur = Convert.ToChar(stream.Peek());
                     if (cur != '"') {
                         return null;
@@ -94,7 +92,7 @@ namespace Foognostic {
                             }
                             else if (cur == '"') {
                                 if (!escaping) {
-                                    form = NLString.Create(buf.ToString());
+                                    form = buf.ToString();
                                 }
                             }
                         }
@@ -107,7 +105,7 @@ namespace Foognostic {
                     return form;
                 }
 
-                public static IForm SymbolFormReader(TextReader stream, Reader reader) {
+                public static object SymbolFormReader(TextReader stream, Reader reader) {
                     char cur;
                     StringWriter buf = null;
 
@@ -128,7 +126,7 @@ namespace Foognostic {
                 }
 
                 // ugh, still has some errors
-                public static IForm KeywordFormReader(TextReader stream, Reader reader) {
+                public static object KeywordFormReader(TextReader stream, Reader reader) {
                     char cur;
                     if (!(PeekChar(stream, out cur) && cur == ':')) {
                         return null;
@@ -145,7 +143,7 @@ namespace Foognostic {
                     StringWriter buf = new StringWriter();
                     buf.Write(ReadChar(stream));
 
-                    IForm form = null;
+                    object form = null;
                     do {
                         if (Empty(stream)) {
                             form = NLKeyword.Create(buf.ToString());
@@ -170,7 +168,7 @@ namespace Foognostic {
                 // TODO: hex! octal!
                 // TODO: bonus points: variable radix (3r20 == 0x06)
                 // TODO: ratios?
-                public static IForm IntegerFormReader(TextReader stream, Reader reader) {
+                public static object IntegerFormReader(TextReader stream, Reader reader) {
                     char cur = Convert.ToChar(stream.Peek());
                     if (!ISDIGIT_PATTERN.Match(cur.ToString()).Success) {
                         return null;
@@ -185,7 +183,7 @@ namespace Foognostic {
                         PeekChar(stream, out cur);
                     } while (ISDIGIT_PATTERN.Match(cur.ToString()).Success);
 
-                    return NLInteger.Create(buf.ToString());
+                    return Int64.Parse(buf.ToString());
                 }
 
                 // FIXME: this is probably not idiomatic
@@ -208,7 +206,7 @@ namespace Foognostic {
 
                     do {
                         SkipWhitespace(stream);
-                        IForm form = reader.ReadNextForm(stream);
+                        object form = reader.ReadNextForm(stream);
                         if (form != null) {
                             coll.Append(form);
                         }
@@ -224,15 +222,15 @@ namespace Foognostic {
                     return coll;
                 }
 
-                public static IForm VectorFormReader(TextReader stream, Reader reader) {
-                    return (IForm) FlatCollectionFormReader(stream, reader, '[', ']', VectorFactory);
+                public static object VectorFormReader(TextReader stream, Reader reader) {
+                    return (object) FlatCollectionFormReader(stream, reader, '[', ']', VectorFactory);
                 }
 
-                public static IForm ListFormReader(TextReader stream, Reader reader) {
-                    return (IForm) FlatCollectionFormReader(stream, reader, '(', ')', ListFactory);
+                public static object ListFormReader(TextReader stream, Reader reader) {
+                    return (object) FlatCollectionFormReader(stream, reader, '(', ')', ListFactory);
                 }
 
-                public static IForm MapFormReader(TextReader stream, Reader reader) {
+                public static object MapFormReader(TextReader stream, Reader reader) {
                     char cur;
                     if (!(PeekChar(stream, out cur) && cur == '{')) {
                         return null;
@@ -242,7 +240,7 @@ namespace Foognostic {
                     SkipChar(stream);
 
                     do {
-                        IForm[] pair = { null, null };
+                        object[] pair = { null, null };
 
                         SkipWhitespace(stream);
                         if (Empty(stream)) {

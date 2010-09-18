@@ -1,17 +1,17 @@
 // //////////////////////////////////////////////////////////////////////////////
 // Copyright 2010 Seth Schroeder
 // This file is part of Nihilisp.
-// 
+//
 // Nihilisp is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Nihilisp is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with Nihilisp.  If not, see <http://www.gnu.org/licenses/>.
 // /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ using System;
 namespace Foognostic {
     namespace Nihilisp {
         namespace Core {
-            public class NLSymbol : NLObject, IAtom, IForm {
+            public class NLSymbol {
                 private string _val;
 
                 public string val {
@@ -35,12 +35,12 @@ namespace Foognostic {
                             return null;
                         }
 
-                        int last_dot = _val.LastIndexOf('.');
-                        if (-1 == last_dot) {
+                        int lastDot = _val.LastIndexOf('.');
+                        if (-1 == lastDot) {
                             return null;
                         }
 
-                        return _val.Substring(0, last_dot);
+                        return _val.Substring(0, lastDot);
                     }
                 }
 
@@ -51,12 +51,12 @@ namespace Foognostic {
                             return null;
                         }
 
-                        int last_dot = _val.LastIndexOf('.');
-                        if (-1 == last_dot || (1 + last_dot) == _val.Length) {
+                        int lastDot = _val.LastIndexOf('.');
+                        if (-1 == lastDot || (1 + lastDot) == _val.Length) {
                             return null;
                         }
 
-                        return _val.Substring(1 + last_dot);
+                        return _val.Substring(1 + lastDot);
                     }
                 }
 
@@ -67,11 +67,11 @@ namespace Foognostic {
                         if (ns == null || ns.Length == 0) {
                             return null;
                         }
-                        int first_dot = ns.IndexOf('.');
-                        if (-1 == first_dot || (1 + first_dot == ns.Length)) {
+                        int firstDot = ns.IndexOf('.');
+                        if (-1 == firstDot || (1 + firstDot == ns.Length)) {
                             return null;
                         }
-                        return ns.Substring(0, first_dot);
+                        return ns.Substring(0, firstDot);
                     }
                 }
 
@@ -85,11 +85,15 @@ namespace Foognostic {
                     return sym;
                 }
 
-                public IForm[] Contents {
+                public object[] Contents {
                     get {
-                        IForm[] ret = { this };
+                        object[] ret = { this };
                         return ret;
                     }
+                }
+
+                override public string ToString() {
+                    return _val;
                 }
 
                 public string Printable() {

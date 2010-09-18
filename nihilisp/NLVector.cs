@@ -1,17 +1,17 @@
 // //////////////////////////////////////////////////////////////////////////////
 // Copyright 2010 Seth Schroeder
 // This file is part of Nihilisp.
-// 
+//
 // Nihilisp is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Nihilisp is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with Nihilisp.  If not, see <http://www.gnu.org/licenses/>.
 // /////////////////////////////////////////////////////////////////////////////
@@ -23,16 +23,16 @@ using System.Collections.Generic;
 namespace Foognostic {
     namespace Nihilisp {
         namespace Core {
-            public class NLVector : NLClass, IForm, ISequence, IFlatCollection {
+            public class NLVector : IFlatCollection {
                 public NLVector() {
-                    _val = new IForm[0];
-                    _list = new List<IForm>();
+                    _val = new object[0];
+                    _list = new List<object>();
                 }
 
-                private IForm[] _val;
-                private List<IForm> _list;
+                private object[] _val;
+                private List<object> _list;
 
-                public IForm[] val {
+                public object[] val {
                     get {
                         int delta = _list.Count - _val.Length;
                         if (delta > 0) {
@@ -45,12 +45,12 @@ namespace Foognostic {
                     }
                 }
 
-                public IFlatCollection Append(IForm form) {
+                public IFlatCollection Append(object form) {
                     _list.Add(form);
                     return this;
                 }
 
-                public IForm[] Contents {
+                public object[] Contents {
                     get {
                         return this.val;
                     }

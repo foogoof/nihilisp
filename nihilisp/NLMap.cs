@@ -1,17 +1,17 @@
 // //////////////////////////////////////////////////////////////////////////////
 // Copyright 2010 Seth Schroeder
 // This file is part of Nihilisp.
-// 
+//
 // Nihilisp is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Nihilisp is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with Nihilisp.  If not, see <http://www.gnu.org/licenses/>.
 // /////////////////////////////////////////////////////////////////////////////
@@ -23,19 +23,19 @@ using System.Collections.Generic;
 namespace Foognostic {
     namespace Nihilisp {
         namespace Core {
-            public class NLMap : NLClass, IForm, ISequence {
+            public class NLMap {
 
-                private Dictionary<IForm, IForm> _val;
+                private Dictionary<object, object> _val;
 
                 public NLMap() {
-                    _val = new Dictionary<IForm, IForm>();
+                    _val = new Dictionary<object, object>();
                 }
 
-                public IForm[] val {
+                public object[] val {
                     get {
-                        IForm[] vals = new IForm[_val.Count * 2];
+                        object[] vals = new object[_val.Count * 2];
                         int i = 0;
-                        foreach (IForm key in _val.Keys) {
+                        foreach (object key in _val.Keys) {
                             vals[i++] = key;
                             vals[i++] = _val[key];
                         }
@@ -43,21 +43,21 @@ namespace Foognostic {
                     }
                 }
 
-                public NLMap Assoc(IForm key, IForm val) {
+                public NLMap Assoc(object key, object val) {
                     _val[key] = val;
                     return this;
                 }
 
-                public IForm Get(IForm key) {
+                public object Get(object key) {
                     return _val[key];
                 }
 
-                public NLMap Dissoc(IForm key) {
+                public NLMap Dissoc(object key) {
                     _val.Remove(key);
                     return this;
                 }
 
-                public IForm[] Contents {
+                public object[] Contents {
                     get {
                         return this.val;
                     }

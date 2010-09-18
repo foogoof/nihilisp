@@ -39,16 +39,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="NLObject.cs" />
-    <Compile Include="NLClass.cs" />
-    <Compile Include="NLString.cs" />
-    <Compile Include="NLInteger.cs" />
-    <Compile Include="IAtom.cs" />
     <Compile Include="Reader.cs" />
     <Compile Include="TestReader.cs" />
-    <Compile Include="ITypedInstanceFactory.cs" />
-    <Compile Include="IClassInstance.cs" />
-    <Compile Include="IForm.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="REPL.cs" />
     <Compile Include="NLList.cs" />

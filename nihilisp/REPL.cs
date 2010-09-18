@@ -20,39 +20,52 @@
 using System;
 using Foognostic.Nihilisp.Core;
 using Foognostic.Nihilisp.Exceptions;
+using Foognostic.PRNG;
 
 namespace Foognostic {
     namespace Nihilisp {
         namespace Runtime {
             public class REPL {
                 public REPL () { }
+
+                public static void Greet() {
+                    string[] messages = {
+                        "Is it meaningful? Doubtful…",
+                        "Don't be too concerned about quality, yet.",
+                        "Do (this) instead of this()"
+                    };
+                    Console.Write(String.Format("Welcome to Nihilisp! {0}\n\n",
+                        messages[new MersenneTwister(DateTime.UtcNow).GenRand() % (ulong)messages.Length]));
+                }
+
                 public static void Main() {
                     Reader arr = new Reader();
                     Evaluator eval = new Evaluator();
-
-                    Console.Write("Welcome to Nihilisp! Is it meaningful? Doubtful…\n\n");
-
+                    Greet();
                     do {
                         Console.Write("nihil> ");
+
                         string str = Console.ReadLine().Trim();
                         if (str.Length == 0) {
-                            Console.WriteLine("");
-                            continue;
+                            // Why yes, this *is* the hard way of printing an empty line.
+                            str = "(System.Console.WriteLine)";
                         }
 
                         try {
-                            IForm form = arr.ReadFirstForm(str.Trim());
+                            object form = arr.ReadFirstForm(str.Trim());
                             if (form == null) {
                                 throw new Exception("uh, couldn't read " + str);
                             }
-                            if (form.GetType() == typeof(NLList)) {
-                                eval.Evaluate(form);
-                            } else {
-                                Console.WriteLine(form.Printable());
+                            form = eval.Evaluate(form);
+                            if (form != null) {
+                                Console.WriteLine(form.ToString());
                             }
                         } catch (ReaderException rex) {
                             Console.WriteLine("Reader exception: " + rex.Message);
                             Console.WriteLine(rex.StackTrace);
+                        } catch (EvaluatorException eex) {
+                            Console.WriteLine("Evaluator exception: " + eex.Message);
+                            Console.WriteLine(eex.StackTrace);
                         } catch (Exception ex) {
                             Console.WriteLine("UNEXPECTED exception: " + ex.Message);
                             Console.WriteLine(ex.StackTrace);

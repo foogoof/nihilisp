@@ -20,7 +20,7 @@
 using System;
 using Foognostic.Nihilisp.Core;
 using Foognostic.Nihilisp.Exceptions;
-using Foognostic.PRNG;
+using Foognostic.Nihilisp.PRNG;
 
 namespace Foognostic {
     namespace Nihilisp {

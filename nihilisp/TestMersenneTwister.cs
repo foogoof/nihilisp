@@ -19,7 +19,7 @@
 // /////////////////////////////////////////////////////////////////////////////
 using System;
 using NUnit.Framework;
-using Foognostic.PRNG;
+using Foognostic.Nihilisp.PRNG;
 
 namespace Foognostic {
     namespace Nihilisp {

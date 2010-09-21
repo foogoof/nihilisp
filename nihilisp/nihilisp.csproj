@@ -52,6 +52,7 @@
     <Compile Include="NLSymbol.cs" />
     <Compile Include="Evaluator.cs" />
     <Compile Include="MersenneTwister.cs" />
+    <Compile Include="TestMersenneTwister.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -63,7 +64,4 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <None Include="MersenneTwisterLicense.txt" />
-  </ItemGroup>
 </Project>

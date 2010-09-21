@@ -21,7 +21,6 @@
 using System;
 using NUnit.Framework;
 using Foognostic.Nihilisp.Core;
-using Foognostic.PRNG;
 
 namespace Foognostic {
     namespace Nihilisp {
@@ -158,12 +157,6 @@ namespace Foognostic {
                     sym = (NLSymbol)rdr.ReadFirstForm("foo.bar");
                     Assert.AreEqual("foo", sym.Namespace);
                     Assert.AreEqual("bar", sym.FunctionName);
-                }
-
-                [Test()]
-                public void TestMt() {
-                    MersenneTwister mt = new MersenneTwister();
-                    mt.GenRand();
                 }
             }
         }

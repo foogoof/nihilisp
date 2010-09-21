@@ -31,8 +31,10 @@ namespace Foognostic {
                 public static void Greet() {
                     string[] messages = {
                         "Is it meaningful? Doubtful…",
-                        "Don't be too concerned about quality, yet.",
-                        "Do (this) instead of this()"
+                        "Do (this) instead of this()",
+                        "It may cause an alignment shift to Chaotic Neutral.",
+                        "Anyone forcing you to use it may be evil in a better-for-them-than-you way.",
+                        "Not worried about quality? Good."
                     };
                     Console.Write(String.Format("Welcome to Nihilisp! {0}\n\n",
                         messages[new MersenneTwister(DateTime.UtcNow).GenRand() % (ulong)messages.Length]));

@@ -317,7 +317,9 @@ namespace Foognostic {
                 private static Regex ISDIGIT_PATTERN = new Regex(@"\d");
                 private static Regex KEYWORD_PATTERN = new Regex(@"[\w\d_]");
                 private static Regex WHITESPACE_PATTERN = new Regex(@"[\s,]");
-                private static Regex SYMBOL_PATTERN = new Regex(@"[a-zA-Z$!¡?¿%^&+-/*=_|<>≤≥…√ø:∞λ∏∑]");
+                // \u03BB is the unicode code point for the lowercase lambda
+                private static Regex SYMBOL_PATTERN = new Regex(@"[a-zA-Z$!¡?¿‽%^&+-/*=_|<>≤≥…√ø:∞λ∏∑]");
+                public static string[] SPECIAL_FORMS = { "def" };
                 // TODO: implement comments
 
                 private static Dictionary<char, char> ESCAPE_SEQUENCE_MAP = new Dictionary<char, char> {

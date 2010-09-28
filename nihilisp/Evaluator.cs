@@ -18,6 +18,8 @@
 // -*- mode: csharp -*-
 // /////////////////////////////////////////////////////////////////////////////
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Foognostic.Nihilisp.Exceptions;
 
@@ -30,12 +32,22 @@ namespace Foognostic {
 
                 // FIXME TODO WARNING
                 // This whole method sucks and will be ruthlessly refactored
+                // … time passes …
+                // This method is getting worse, not better.
                 public object Evaluate(object form) {
                     if (form == null) {
                         throw new ArgumentNullException("No form supplied!");
                     }
 
-                    if (form.GetType() != typeof(NLList)) {
+                    if (form.GetType() == typeof(NLSymbol)) {
+                        foreach (var pair in Environment.instance) {
+                            if (pair.Key.ToString() == form.ToString()) {
+                                return pair.Value.ToString();
+                            }
+                        }
+                        throw new EvaluatorException(String.Format("{0} looks like a symbol, but has no definition", form.ToString()));
+                    }
+                    else if (form.GetType() != typeof(NLList)) {
                         return form.ToString();
                     }
 
@@ -54,6 +66,12 @@ namespace Foognostic {
                         for (int i = 1; i < items.Contents.Length; i++) {
                             args[i - 1] = items.Contents[i];
                         }
+                    }
+
+                    // A little daily WTF never hurts…
+                    if (items.Contents[0].ToString() == "def") {
+                        SpecialForms.Def((NLSymbol)items.Contents[1], items.Contents[2]);
+                        return null;
                     }
 
                     object[] callingArgs = new object[args.Length];

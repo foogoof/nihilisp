@@ -53,7 +53,7 @@ namespace Foognostic {
 
                         int lastDot = _val.LastIndexOf('.');
                         if (-1 == lastDot || (1 + lastDot) == _val.Length) {
-                            return null;
+                            return _val;
                         }
 
                         return _val.Substring(1 + lastDot);

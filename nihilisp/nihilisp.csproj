@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="nunit.framework" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -53,6 +54,8 @@
     <Compile Include="Evaluator.cs" />
     <Compile Include="MersenneTwister.cs" />
     <Compile Include="TestMersenneTwister.cs" />
+    <Compile Include="Environment.cs" />
+    <Compile Include="SpecialForms.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

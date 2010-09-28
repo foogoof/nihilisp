@@ -48,7 +48,7 @@ namespace Foognostic {
                         throw new EvaluatorException(String.Format("{0} looks like a symbol, but has no definition", form.ToString()));
                     }
                     else if (form.GetType() != typeof(NLList)) {
-                        return form.ToString();
+                        return form;
                     }
 
                     NLList items = (NLList)form;

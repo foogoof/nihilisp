@@ -37,6 +37,16 @@ namespace Foognostic {
                     return this;
                 }
 
+                override public string ToString() {
+                    StringWriter buf = new StringWriter();
+                    buf.Write("( ");
+                    foreach (object o in forms) {
+                        buf.Write(String.Format("{0} ", PrettyPrinter.Reformat(o)));
+                    }
+                    buf.Write(')');
+                    return buf.ToString();
+                }
+
                 public object[] Contents {
                     get {
                         object[] formArr = new object[forms.Count];

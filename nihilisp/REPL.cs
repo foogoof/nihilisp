@@ -48,6 +48,8 @@ namespace Foognostic {
                         Console.Write("nihil> ");
 
                         string str = Console.ReadLine().Trim();
+                        // FIXME: the really annoying echo problem
+
                         if (str.Length == 0) {
                             // Why yes, this *is* the hard way of printing an empty line.
                             str = "(System.Console.WriteLine)";
@@ -60,7 +62,7 @@ namespace Foognostic {
                             }
                             form = eval.Evaluate(form);
                             if (form != null) {
-                                Console.WriteLine(form.ToString());
+                                Console.WriteLine(PrettyPrinter.Reformat(form));
                             }
                         } catch (ReaderException rex) {
                             Console.WriteLine("Reader exception: " + rex.Message);

@@ -19,6 +19,7 @@
 // /////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Foognostic {
     namespace Nihilisp {
@@ -31,6 +32,16 @@ namespace Foognostic {
 
                 private object[] _val;
                 private List<object> _list;
+
+                override public string ToString() {
+                    StringWriter buf = new StringWriter();
+                    buf.Write("[ ");
+                    foreach (object o in val) {
+                        buf.Write(String.Format("{0} ", PrettyPrinter.Reformat(o)));
+                    }
+                    buf.Write(']');
+                    return buf.ToString();
+                }
 
                 public object[] val {
                     get {

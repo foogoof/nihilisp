@@ -18,6 +18,7 @@
 // -*- mode: csharp -*-
 // /////////////////////////////////////////////////////////////////////////////
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace Foognostic {
@@ -41,6 +42,16 @@ namespace Foognostic {
                         }
                         return vals;
                     }
+                }
+
+                override public string ToString() {
+                    StringWriter buf = new StringWriter();
+                    buf.Write("{ ");
+                    foreach (var pair in _val) {
+                        buf.Write(String.Format("{0} {1} ", PrettyPrinter.Reformat(pair.Key), PrettyPrinter.Reformat(pair.Value)));
+                    }
+                    buf.Write('}');
+                    return buf.ToString();
                 }
 
                 public NLMap Assoc(object key, object val) {

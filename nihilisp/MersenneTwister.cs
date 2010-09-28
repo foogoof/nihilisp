@@ -101,14 +101,6 @@ namespace Foognostic {
                     }
                 }
 
-                private void trace(int start, int elts, string label) {
-                    Console.Write("{0} nlt: ", label);
-                    for (int i = 0; i < elts; i++) {
-                        Console.Write(String.Format("{0:d20} ", _state[start + i]));
-                    }
-                    Console.WriteLine();
-                }
-
                 public ulong GenRand() {
                     int idx;
                     ulong prval, hob, lob, tmp0, tmp1, tmp2;
@@ -134,7 +126,7 @@ namespace Foognostic {
                             hob = _state[idx] & HIGH_ORDER_MASK;
                             lob = _state[idx + 1] & LOW_ORDER_MASK;
                             prval = hob | lob;
-                            
+
                             tmp0 = _state[-HALF_STATE_ITEMS + idx];
                             tmp1 = prval >> 1;
                             tmp2 = (prval % 2 == 0) ? 0 : MATRIX_A;
@@ -162,6 +154,14 @@ namespace Foognostic {
                     prval ^= (prval >> 43) & 0xFFFFFFFFFFFFFFFF;
                     
                     return prval;
+                }
+
+                private void trace(int start, int elts, string label) {
+                    Console.Write("{0} nlt: ", label);
+                    for (int i = 0; i < elts; i++) {
+                        Console.Write(String.Format("{0:d20} ", _state[start + i]));
+                    }
+                    Console.WriteLine();
                 }
 
                 // BEGIN: disgusting hacks for reflection invocation of methods from the REPL
